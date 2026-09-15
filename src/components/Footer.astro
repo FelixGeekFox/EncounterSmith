@@ -1,0 +1,196 @@
+---
+import Emblem from './Emblem.astro';
+import Wordmark from './Wordmark.astro';
+import { bannerRhythm, compatibilityNotice, primaryNav, site } from '@/data/site';
+import { tools } from '@/data/tools';
+import { path } from '@/lib/url';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer on-dark">
+  <div class="shell">
+    <div class="site-footer__top">
+      <div class="site-footer__brand">
+        <Emblem size={72} />
+        <div>
+          <Wordmark inverse tagline />
+          <p class="site-footer__blurb">{site.blurb}</p>
+        </div>
+      </div>
+
+      <nav class="site-footer__col" aria-label="Free tools">
+        <h2>Tools</h2>
+        <ul>{tools.map((tool) => <li><a href={path(tool.href)}>{tool.name}</a></li>)}</ul>
+      </nav>
+
+      <nav class="site-footer__col" aria-label="Site sections">
+        <h2>Explore</h2>
+        <ul>{primaryNav.map((item) => <li><a href={path(item.href)}>{item.label}</a></li>)}</ul>
+      </nav>
+
+      <nav class="site-footer__col" aria-label="Contact and legal">
+        <h2>Details</h2>
+        <ul>
+          <li><a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a></li>
+          <li><a href={path('/privacy')}>Privacy</a></li>
+          <li><a href={path('/terms')}>Terms</a></li>
+        </ul>
+        {
+          site.socials.length > 0 && (
+            <ul class="site-footer__socials">
+              {site.socials.map((social) => (
+                <li>
+                  <a href={social.url} rel="me noopener noreferrer">
+                    {social.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )
+        }
+      </nav>
+    </div>
+
+    <p class="site-footer__rhythm" aria-hidden="true">
+      {
+        bannerRhythm.map((word, index) => (
+          <>
+            {index > 0 && <span class="site-footer__pip" />}
+            <span>{word}</span>
+          </>
+        ))
+      }
+    </p>
+
+    <div class="site-footer__base">
+      <p>{compatibilityNotice}</p>
+      <p>&copy; {year} {site.name}. Every generator table on this site is original.</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: var(--space-2xl);
+    background:
+      radial-gradient(90% 120% at 8% 0%, rgba(176, 141, 87, 0.2), transparent 60%),
+      linear-gradient(180deg, var(--color-surface-dark), var(--forest-black));
+    color: var(--color-text-inverse);
+    border-top: 2px solid var(--brand-bronze);
+  }
+
+  .site-footer__top {
+    display: grid;
+    gap: var(--space-lg);
+    padding-block: var(--space-xl) var(--space-md);
+  }
+
+  @media (min-width: 40rem) {
+    .site-footer__top {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .site-footer__brand {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (min-width: 66rem) {
+    .site-footer__top {
+      grid-template-columns: 2.2fr 1fr 1fr 1.2fr;
+    }
+
+    .site-footer__brand {
+      grid-column: auto;
+    }
+  }
+
+  .site-footer__brand {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-sm);
+    max-width: 30rem;
+  }
+
+  .site-footer__brand :global(.wm) {
+    align-items: flex-start;
+  }
+
+  .site-footer__blurb {
+    margin-top: var(--space-2xs);
+    font-size: var(--text-sm);
+    color: var(--color-text-inverse-muted);
+  }
+
+  .site-footer__col h2 {
+    margin: 0 0 var(--space-2xs);
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--brand-candlelight);
+  }
+
+  .site-footer__col ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .site-footer__socials {
+    margin-top: var(--space-2xs);
+  }
+
+  .site-footer a {
+    color: var(--brand-parchment);
+    font-size: var(--text-sm);
+    text-decoration-color: rgba(234, 220, 198, 0.4);
+    overflow-wrap: anywhere;
+  }
+
+  .site-footer a:hover {
+    color: var(--brand-candlelight);
+  }
+
+  /* The four-word rhythm painted along the foot of the supplied banner. */
+  .site-footer__rhythm {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0.6rem 1.1rem;
+    margin: 0;
+    padding-block: var(--space-sm);
+    border-top: 1px solid var(--color-border-inverse);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+    color: var(--brand-bronze);
+  }
+
+  .site-footer__pip {
+    width: 0.35rem;
+    height: 0.35rem;
+    rotate: 45deg;
+    background: currentColor;
+  }
+
+  .site-footer__base {
+    display: grid;
+    gap: var(--space-2xs);
+    padding-block: var(--space-sm) var(--space-lg);
+    border-top: 1px solid var(--color-border-inverse);
+  }
+
+  .site-footer__base p {
+    max-width: 64ch;
+    font-size: var(--text-xs);
+    line-height: 1.65;
+    color: var(--color-text-inverse-muted);
+  }
+</style>

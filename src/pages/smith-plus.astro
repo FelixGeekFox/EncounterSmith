@@ -1,0 +1,274 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHeader from '@/components/PageHeader.astro';
+import SectionHeading from '@/components/SectionHeading.astro';
+import NewsletterForm from '@/components/NewsletterForm.astro';
+import Emblem from '@/components/Emblem.astro';
+import { site } from '@/data/site';
+import { tools } from '@/data/tools';
+import { path } from '@/lib/url';
+
+const planned = [
+  {
+    title: 'Deeper generator tables',
+    body: 'Regional and tonal variants, longer tables, and a way to steer a result towards grim, warm, comic or courtly before you draw it.',
+  },
+  {
+    title: 'Saved ideas',
+    body: 'Keep the NPCs and encounters you liked, organised by campaign, and find them again six months later.',
+  },
+  {
+    title: 'Printable exports',
+    body: 'Clean PDF and index-card layouts made for a Game Master screen rather than a browser window.',
+  },
+  {
+    title: 'Monthly content drops',
+    body: 'New tables, a short adventure and a set of ready-made NPCs each month.',
+  },
+  {
+    title: 'Campaign organisation',
+    body: 'Somewhere to keep the threads, the names and the things you promised the players, without building a wiki.',
+  },
+];
+---
+
+<BaseLayout
+  title="Smith+ — the founding list"
+  description="Smith+ is the planned EncounterSmith subscription: deeper generator tables, saved ideas, printable exports and monthly content drops. It is not available yet. Join the founding list to hear first."
+  path="/smith-plus"
+>
+  <PageHeader
+    eyebrow="Smith+ · coming later"
+    title="A deeper workshop, when it is ready."
+    lede="Smith+ is the planned subscription tier for EncounterSmith. It is not built, it is not for sale, and none of the features below work yet."
+    crumbs={[{ label: 'Home', href: '/' }, { label: 'Smith+' }]}
+  >
+    <p class="alert">
+      <strong>Nothing on this page can be bought.</strong> There is no checkout, no account and no
+      price. The founding list is simply a way to be told when that changes.
+    </p>
+  </PageHeader>
+
+  <section class="band band--tight">
+    <div class="shell">
+      <div class="ledger">
+        <div class="ledger__col">
+          <h2 class="ledger__head">Available now</h2>
+          <ul class="ledger__list ledger__list--yes">
+            {tools.map((tool) => <li><a href={path(tool.href)}>{tool.name}</a></li>)}
+            <li><a href={path('/#spark')}>Tonight&rsquo;s Spark</a></li>
+            <li><a href={path('/free-resources')}>25 session-saving plot hooks</a></li>
+            <li>Lock, reroll, copy and print, on every generator</li>
+          </ul>
+          <p class="note">
+            Free, complete, and staying that way. None of it moves behind a subscription.
+          </p>
+        </div>
+        <div class="ledger__col">
+          <h2 class="ledger__head">Coming later</h2>
+          <ul class="ledger__list ledger__list--no">
+            {planned.map((item) => <li>{item.title}</li>)}
+          </ul>
+          <p class="note">
+            {
+              site.features.smithPlusPrice && site.smithPlus.price
+                ? `Intended price: ${site.smithPlus.price} per ${site.smithPlus.interval}. Not yet available to buy.`
+                : 'No price has been set. When one is, it will be published here before anything goes on sale.'
+            }
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="shell">
+      <SectionHeading eyebrow="What is planned" title="Five things worth building.">
+        <p>
+          This is the current intention, not a commitment. Some of it will change, and anything that
+          turns out not to help at the table will be dropped rather than shipped.
+        </p>
+      </SectionHeading>
+      <ul class="planned">
+        {
+          planned.map((item) => (
+            <li class="planned__item">
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+              <p class="planned__flag">Not built yet</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="band band--dark" id="founding-list">
+    <div class="shell founding">
+      <div>
+        <SectionHeading eyebrow="Founding list" title="Join the founding list.">
+          <p>
+            One email when there is something real to look at, and an early say in what gets built.
+            No charge, no obligation, and one click leaves.
+          </p>
+        </SectionHeading>
+        <p class="note founding__note">
+          If you have an opinion about what a subscription would need to be worth paying for, the
+          <a href={`mailto:${site.contactEmail}`}>contact address</a> is open. That is more useful now
+          than it will be once it is built.
+        </p>
+      </div>
+      <div class="plate plate--dark founding__form on-dark">
+        <Emblem size={64} />
+        <NewsletterForm id="plus-founding" source="smith-plus-page" submitLabel="Join the founding list" inverse />
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .alert {
+    max-width: 58ch;
+    margin-top: var(--space-md);
+    padding: var(--space-xs) var(--space-sm);
+    background: var(--color-surface-raised);
+    border: 1px solid var(--color-border-strong);
+    border-left: 4px solid var(--color-accent);
+    border-radius: var(--radius);
+    font-size: var(--text-sm);
+  }
+
+  /* Two columns, plainly labelled, so what exists and what does not are read
+     as a comparison rather than a feature list. */
+  .ledger {
+    display: grid;
+    gap: var(--space-lg);
+  }
+
+  @media (min-width: 52rem) {
+    .ledger {
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-xl);
+    }
+  }
+
+  .ledger__head {
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--clay-ink);
+    padding-bottom: var(--space-2xs);
+    border-bottom: 2px solid var(--color-accent);
+  }
+
+  .ledger__list {
+    list-style: none;
+    margin: var(--space-sm) 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-2xs);
+  }
+
+  .ledger__list li {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+  }
+
+  /* State is marked by a word and a mark, never colour alone. */
+  .ledger__list--yes li::before {
+    content: 'Now';
+    flex: none;
+    width: 3.4rem;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #3c2c09;
+    background: var(--brand-candlelight);
+    border: 1px solid #9b7a2e;
+    border-radius: 999px;
+    padding: 0.05rem 0;
+    text-align: center;
+  }
+
+  .ledger__list--no li::before {
+    content: 'Later';
+    flex: none;
+    width: 3.4rem;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    border: 1px dashed var(--color-border-strong);
+    border-radius: 999px;
+    padding: 0.05rem 0;
+    text-align: center;
+  }
+
+  .planned {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-md);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  }
+
+  .planned__item {
+    display: grid;
+    align-content: start;
+    gap: var(--space-3xs);
+    padding-top: var(--space-sm);
+    border-top: 2px solid var(--color-accent);
+  }
+
+  .planned__item h3 {
+    font-size: var(--text-lg);
+  }
+
+  .planned__item p {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+
+  .planned__flag {
+    justify-self: start;
+    margin-top: var(--space-3xs);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #453309 !important;
+    background: var(--brand-candlelight);
+    border: 1px solid #9b7a2e;
+    border-radius: 999px;
+    padding: 0.1rem 0.6rem;
+  }
+
+  .founding {
+    display: grid;
+    gap: var(--space-lg);
+    align-items: start;
+    scroll-margin-top: calc(var(--header-h) + 1.5rem);
+  }
+
+  @media (min-width: 58rem) {
+    .founding {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: var(--space-xl);
+    }
+  }
+
+  .founding__note {
+    max-width: 48ch;
+  }
+
+  .founding__form {
+    display: grid;
+    gap: var(--space-2xs);
+  }
+</style>

@@ -1,0 +1,311 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHeader from '@/components/PageHeader.astro';
+import SectionHeading from '@/components/SectionHeading.astro';
+import NewsletterForm from '@/components/NewsletterForm.astro';
+import Button from '@/components/Button.astro';
+import { hooks, LEAD_MAGNET_COUNT } from '@/data/generators/hooks';
+import { tools } from '@/data/tools';
+import { site } from '@/data/site';
+import { path } from '@/lib/url';
+
+/*
+ * The advertised lead magnet is published in full on this page rather than held
+ * behind a form. No email provider is connected, so a gated download would be a
+ * promise the site could not keep. See the README for how to change that later.
+ */
+const leadMagnet = hooks.slice(0, LEAD_MAGNET_COUNT);
+
+const prepSteps = [
+  {
+    title: 'Fifteen minutes before the session',
+    body: 'Forge one NPC and one encounter. Write the NPC’s want and the encounter’s objective on a card. That is the whole of your prep, and it will hold for an evening.',
+  },
+  {
+    title: 'When the party goes somewhere you had not planned',
+    body: 'Forge a tavern. Lead with the atmosphere, hand them the proprietor, and keep the current problem in reserve until somebody asks a question.',
+  },
+  {
+    title: 'When a session ends flat',
+    body: 'Take a spark, change one noun so it points at somebody the party already cares about, and open next session with it.',
+  },
+  {
+    title: 'Between campaigns',
+    body: 'Forge five NPCs and lock nothing. Keep the three that made you curious and throw the rest away. That is a cast.',
+  },
+];
+---
+
+<BaseLayout
+  title={`Free resources — ${LEAD_MAGNET_COUNT} session-saving plot hooks`}
+  description={`${LEAD_MAGNET_COUNT} original, system-friendly plot hooks for tabletop RPGs, free to read and copy with no email required, plus the free NPC, encounter and tavern generators.`}
+  path="/free-resources"
+>
+  <PageHeader
+    eyebrow="Free resources"
+    title={`${LEAD_MAGNET_COUNT} session-saving plot hooks.`}
+    lede="Original story hooks, free to read and copy right now. No email required, no download gate, no form standing between you and the list."
+    crumbs={[{ label: 'Home', href: '/' }, { label: 'Free Resources' }]}
+  >
+    <div class="btn-row hooks__actions" data-print-hide>
+      <Button data-copy-hooks>Copy all {LEAD_MAGNET_COUNT}</Button>
+      <Button variant="outline" data-print-hooks>Print the list</Button>
+    </div>
+    <p class="hooks__live" role="status" aria-live="polite" data-hooks-live></p>
+  </PageHeader>
+
+  <section class="band band--tight">
+    <div class="shell">
+      <ol class="hooks" data-hooks>
+        {leadMagnet.map((hook) => <li>{hook}</li>)}
+      </ol>
+      <p class="note hooks__licence">
+        These hooks are original to EncounterSmith and free to use in your own games. Please do not
+        republish the list wholesale: commercial licensing is being prepared and is not in place yet.
+      </p>
+    </div>
+  </section>
+
+  <section class="band band--quiet">
+    <div class="shell">
+      <SectionHeading eyebrow="Also free" title="The generators, in full.">
+        <p>Three tools, no account, no limits. Every result is yours to change and use.</p>
+      </SectionHeading>
+      <ul class="resources">
+        {
+          tools.map((tool) => (
+            <li>
+              <h3><a href={path(tool.href)}>{tool.name}</a></h3>
+              <p>{tool.produces}</p>
+            </li>
+          ))
+        }
+        <li>
+          <h3><a href={path('/#spark')}>Tonight&rsquo;s Spark</a></h3>
+          <p>
+            A single original story hook on the home page, with a fresh one on every press and a copy
+            button beside it.
+          </p>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="shell">
+      <SectionHeading eyebrow="Using them" title="Where these fit in a week of prep.">
+        <p>
+          The tools are most useful in the gaps, not at the desk. Four moments where reaching for one
+          saves an evening.
+        </p>
+      </SectionHeading>
+      <ol class="prep">
+        {
+          prepSteps.map((step) => (
+            <li class="prep__item">
+              <h3>{step.title}</h3>
+              <p>{step.body}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="band band--dark" id="launch-list">
+    <div class="shell launch">
+      <div>
+        <SectionHeading eyebrow="Launch list" title="Hear when the next thing lands.">
+          <p>
+            New free tools, new resources and the first adventure packs. One short email at a time,
+            and nothing shared with anybody else.
+          </p>
+        </SectionHeading>
+        <p class="note launch__note">
+          Joining costs nothing and commits you to nothing. If you would rather not, everything on
+          this page stays free anyway.
+        </p>
+      </div>
+      <div class="plate plate--dark on-dark">
+        <NewsletterForm id="resources-launch" source="free-resources" submitLabel="Join the launch list" inverse />
+      </div>
+    </div>
+  </section>
+
+  <section class="band band--quiet">
+    <div class="shell prose">
+      <SectionHeading eyebrow="Getting more out of a hook" title="Point it at something they already care about." />
+      <p>
+        A hook works when it is specific, strange, and attached to somebody your players already know.
+        Take any line above and change one noun so it names a person, a village or an object that has
+        already appeared in your campaign. That single edit turns a curiosity into a reason to travel.
+      </p>
+      <p>
+        You do not need to know the answer before you use one. Most of these are better if you find
+        out at the same time as the table. Write down the question the hook raises, settle the answer
+        between sessions, and let the players chase it in the meantime.
+      </p>
+      <p class="note">
+        Want to suggest one? The <a href={`mailto:${site.contactEmail}`}>contact address</a> is open,
+        and original entries do get added to the tables.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  import { COPY_FAILED_MESSAGE, copyToClipboard } from '@/scripts/clipboard';
+
+  const list = document.querySelector<HTMLElement>('[data-hooks]');
+  const live = document.querySelector<HTMLElement>('[data-hooks-live]');
+  const copyButton = document.querySelector<HTMLButtonElement>('[data-copy-hooks]');
+  const printButton = document.querySelector<HTMLButtonElement>('[data-print-hooks]');
+  let timer: number | undefined;
+
+  const say = (message: string): void => {
+    if (!live) return;
+    live.textContent = message;
+    if (timer !== undefined) window.clearTimeout(timer);
+    timer = window.setTimeout(() => {
+      live.textContent = '';
+    }, 7000);
+  };
+
+  copyButton?.addEventListener('click', () => {
+    void (async () => {
+      const items = list ? Array.from(list.querySelectorAll('li')) : [];
+      const body = items
+        .map((item, index) => `${index + 1}. ${item.textContent?.trim() ?? ''}`)
+        .join('\n');
+      const ok = await copyToClipboard(`Session-Saving Plot Hooks — EncounterSmith\n\n${body}`);
+      say(ok ? `All ${items.length} hooks copied to your clipboard.` : COPY_FAILED_MESSAGE);
+    })();
+  });
+
+  printButton?.addEventListener('click', () => window.print());
+</script>
+
+<style>
+  .hooks__actions {
+    margin-top: var(--space-md);
+  }
+
+  .hooks__live {
+    min-height: 1.6rem;
+    margin-top: var(--space-2xs);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    color: var(--clay-ink);
+  }
+
+  /* A numbered ledger: the count is the point of the resource. */
+  .hooks {
+    list-style: none;
+    counter-reset: hook;
+    margin: 0;
+    padding: 0;
+    max-width: 58rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .hooks li {
+    counter-increment: hook;
+    position: relative;
+    padding: var(--space-xs) 0 var(--space-xs) 3rem;
+    border-bottom: 1px solid var(--color-border);
+    break-inside: avoid;
+  }
+
+  .hooks li::before {
+    content: counter(hook);
+    position: absolute;
+    left: 0;
+    top: var(--space-xs);
+    width: 2rem;
+    font-family: var(--font-display);
+    font-size: var(--text-base);
+    font-weight: 700;
+    color: var(--bronze-ink);
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .hooks__licence {
+    margin-top: var(--space-md);
+    max-width: 58ch;
+  }
+
+  .resources {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-md);
+  }
+
+  @media (min-width: 52rem) {
+    .resources {
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-md) var(--space-lg);
+    }
+  }
+
+  .resources h3 {
+    margin-bottom: var(--space-3xs);
+    font-size: var(--text-lg);
+  }
+
+  .resources p {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+
+  .prep {
+    list-style: none;
+    counter-reset: prep;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-md);
+  }
+
+  @media (min-width: 52rem) {
+    .prep {
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-lg);
+    }
+  }
+
+  .prep__item {
+    counter-increment: prep;
+    padding-left: var(--space-sm);
+    border-left: 2px solid var(--color-accent);
+  }
+
+  .prep__item h3 {
+    margin-bottom: var(--space-3xs);
+    font-size: var(--text-lg);
+  }
+
+  .prep__item p {
+    color: var(--color-text-muted);
+  }
+
+  .launch {
+    display: grid;
+    gap: var(--space-lg);
+    align-items: start;
+    scroll-margin-top: calc(var(--header-h) + 1.5rem);
+  }
+
+  @media (min-width: 58rem) {
+    .launch {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: var(--space-xl);
+    }
+  }
+
+  .launch__note {
+    max-width: 48ch;
+  }
+</style>

@@ -1,0 +1,91 @@
+---
+import type { GeneratorDef } from '@/scripts/generator';
+import '@/styles/generator.css';
+import { path } from '@/lib/url';
+
+interface Props {
+  def: GeneratorDef;
+}
+
+const { def } = Astro.props;
+const inline = def.nounInline;
+const labelId = (id: string): string => `${def.id}-${id}-label`;
+---
+
+<section class="forge" data-forge aria-labelledby={`${def.id}-forge-heading`}>
+  <h2 class="visually-hidden" id={`${def.id}-forge-heading`}>{def.noun} generator</h2>
+
+  <div class="forge__bar" data-print-hide>
+    <div class="forge__bar-group">
+      <button class="btn" type="button" data-act="roll">Generate {inline}</button>
+      <button class="btn btn--outline" type="button" data-act="roll" data-needs-roll disabled>
+        Regenerate all
+      </button>
+    </div>
+    <div class="forge__bar-group forge__bar-group--end">
+      <button class="btn btn--outline btn--sm" type="button" data-act="copy-text" data-needs-roll disabled>
+        Copy as text
+      </button>
+      <button class="btn btn--outline btn--sm" type="button" data-act="copy-md" data-needs-roll disabled>
+        Copy as Markdown
+      </button>
+      <button class="btn btn--outline btn--sm" type="button" data-act="print" data-needs-roll disabled>
+        Print
+      </button>
+    </div>
+  </div>
+
+  <p class="forge__live" role="status" aria-live="polite" data-live data-print-hide></p>
+
+  <div class="forge__empty" data-empty>
+    <h3>The anvil is cold</h3>
+    <p>
+      Press <strong>Generate {inline}</strong> and a complete {inline} appears below. Lock whatever you
+      want to keep, reroll the rest, and copy the result straight into your notes.
+    </p>
+    <noscript>
+      <p>
+        <strong>This generator needs JavaScript.</strong> Every other part of the site works without it,
+        and the plot hooks on the <a href={path('/free-resources')}>free resources page</a> can be read and
+        copied with scripts turned off.
+      </p>
+    </noscript>
+  </div>
+
+  <div class="forge__result plate plate--flush" data-result hidden tabindex="-1" aria-label={`Generated ${inline}`}>
+    <ol class="forge__slots" data-slots hidden>
+      {
+        def.fields.map((field) => (
+          <li class="slot" data-slot={field.id} data-locked="false" data-filled="false">
+            <div class="slot__head">
+              <h3 class="slot__label" id={labelId(field.id)}>{field.label}</h3>
+              <span class="slot__flag">Locked</span>
+            </div>
+            {field.help && <p class="slot__help">{field.help}</p>}
+            <p class="slot__value" data-value data-placeholder="Not yet forged" aria-labelledby={labelId(field.id)}>
+              Not yet forged
+            </p>
+            <div class="slot__actions" data-print-hide>
+              <button
+                class="slot__btn"
+                type="button"
+                data-act="lock"
+                aria-pressed="false"
+                aria-describedby={labelId(field.id)}
+              >
+                <span data-lock-text>Lock</span>
+              </button>
+              <button class="slot__btn" type="button" data-act="reroll" aria-describedby={labelId(field.id)}>
+                Reroll
+              </button>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+
+  <p class="forge__hint" data-print-hide>
+    With this panel focused, press <kbd>G</kbd> to forge another.
+  </p>
+</section>

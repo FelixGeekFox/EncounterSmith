@@ -1,0 +1,94 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHeader from '@/components/PageHeader.astro';
+import { site } from '@/data/site';
+---
+
+<BaseLayout
+  title="Privacy"
+  description="What EncounterSmith does and does not collect: no analytics, no tracking, no accounts, and generator results that never leave your browser."
+  path="/privacy"
+>
+  <PageHeader
+    eyebrow="Privacy"
+    title="Privacy notice."
+    crumbs={[{ label: 'Home', href: '/' }, { label: 'Privacy' }]}
+  >
+    <p class="note">Last updated {site.legal.updated}.</p>
+  </PageHeader>
+
+  <section class="band band--tight">
+    <div class="shell prose">
+      <h2>The short version</h2>
+      <p>
+        This site does not track you. There is no analytics script, no advertising network, no cookie
+        banner and no account system, because none of those things are in use.
+      </p>
+
+      <h2>The generators</h2>
+      <p>
+        The NPC, encounter and tavern generators run entirely in your browser. The random tables are
+        downloaded with the page and the results are produced on your own device. Nothing you forge
+        is transmitted to this site or stored anywhere by it.
+      </p>
+
+      <h2>Cookies and local storage</h2>
+      <p>
+        {site.name} sets no cookies and writes nothing to your browser&rsquo;s local storage. The only
+        data held in your browser while you use a generator is the current result, which disappears
+        when you close or reload the page.
+      </p>
+
+      <h2>Server logs</h2>
+      <p>
+        The site is served as static files by a hosting provider. Like any web host, that provider may
+        keep short-lived technical logs of requests, which can include IP addresses, for security and
+        reliability. {site.name} does not read, analyse or retain those logs for any other purpose.
+      </p>
+
+      <h2>Email</h2>
+      {
+        site.emailFormAction ? (
+          <p>
+            If you join the launch or founding list, your address is sent to our email provider
+            {site.emailProvider ? ` (${site.emailProvider})` : ''} and stored there so we can write to
+            you. It is used only for occasional email from {site.name}, it is never sold or shared for
+            marketing, and every message carries an unsubscribe link that removes you from the list.
+          </p>
+        ) : (
+          <p>
+            No email provider is connected to this site yet, so the sign-up forms are inactive and no
+            addresses are being collected. If you write to us directly, we keep your message and your
+            address only for as long as it takes to reply and to honour whatever you asked for.
+          </p>
+        )
+      }
+
+      <h2>Third parties</h2>
+      <p>
+        Fonts are bundled with the site and served from this domain, so no request goes to a font
+        service while you browse. No third-party scripts are loaded. If a link takes you elsewhere,
+        that site&rsquo;s own practices apply from that point.
+      </p>
+
+      <h2>Your rights</h2>
+      <p>
+        You can ask what personal information we hold about you, ask for it to be corrected, or ask for
+        it to be deleted. Because the site holds almost nothing, that is usually a quick answer. Write
+        to <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>.
+      </p>
+
+      <h2>Changes</h2>
+      <p>
+        If this notice changes in a way that affects you, the date at the top changes with it and the
+        new version is published here.
+      </p>
+
+      <h2>Contact</h2>
+      <p>
+        {site.legal.entity}, {site.legal.jurisdiction}.<br />
+        <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>
+      </p>
+    </div>
+  </section>
+</BaseLayout>

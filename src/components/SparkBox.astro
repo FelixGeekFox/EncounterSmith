@@ -1,0 +1,65 @@
+---
+import { hooks, sparkIntro } from '@/data/generators/hooks';
+import '@/styles/generator.css';
+
+// Rendered on the server so the panel is never blank, scripts or no scripts.
+const opening = hooks[0] as string;
+---
+
+<div class="plate plate--dark spark on-dark" data-spark>
+  <p class="eyebrow">Tonight&rsquo;s spark</p>
+  <p class="spark__text" data-spark-text>{opening}</p>
+  <p class="note">{sparkIntro}</p>
+  <div class="btn-row" data-print-hide>
+    <button class="btn btn--brass btn--sm" type="button" data-spark-next>Another spark</button>
+    <button class="btn btn--quiet btn--sm" type="button" data-spark-copy>Copy this spark</button>
+  </div>
+  <p class="spark__live" role="status" aria-live="polite" data-spark-live></p>
+</div>
+
+<script>
+  import { hooks } from '@/data/generators/hooks';
+  import { COPY_FAILED_MESSAGE, copyToClipboard } from '@/scripts/clipboard';
+
+  const panel = document.querySelector<HTMLElement>('[data-spark]');
+  const text = panel?.querySelector<HTMLElement>('[data-spark-text]');
+  const live = panel?.querySelector<HTMLElement>('[data-spark-live]');
+  const next = panel?.querySelector<HTMLButtonElement>('[data-spark-next]');
+  const copy = panel?.querySelector<HTMLButtonElement>('[data-spark-copy]');
+
+  if (panel && text && next) {
+    const seen: string[] = [text.textContent?.trim() ?? ''];
+    const depth = Math.min(10, Math.floor(hooks.length / 3));
+    let timer: number | undefined;
+
+    const say = (message: string): void => {
+      if (!live) return;
+      live.textContent = message;
+      if (timer !== undefined) window.clearTimeout(timer);
+      timer = window.setTimeout(() => {
+        live.textContent = '';
+      }, 6000);
+    };
+
+    next.addEventListener('click', () => {
+      let picked = text.textContent ?? '';
+      for (let attempt = 0; attempt < 30; attempt += 1) {
+        const candidate = hooks[Math.floor(Math.random() * hooks.length)];
+        if (candidate === undefined) continue;
+        picked = candidate;
+        if (!seen.includes(candidate)) break;
+      }
+      seen.unshift(picked);
+      seen.splice(depth);
+      text.textContent = picked;
+      say('New spark.');
+    });
+
+    copy?.addEventListener('click', () => {
+      void (async () => {
+        const ok = await copyToClipboard(text.textContent ?? '');
+        say(ok ? 'Spark copied.' : COPY_FAILED_MESSAGE);
+      })();
+    });
+  }
+</script>

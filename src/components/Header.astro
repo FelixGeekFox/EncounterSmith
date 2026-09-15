@@ -1,0 +1,217 @@
+---
+import Emblem from './Emblem.astro';
+import Wordmark from './Wordmark.astro';
+import { primaryNav } from '@/data/site';
+import { path } from '@/lib/url';
+
+const here = Astro.url.pathname.replace(/\/+$/, '') || '/';
+const isCurrent = (href: string): boolean => {
+  const target = path(href);
+  return target === path('/') ? here === target : here === target || here.startsWith(`${target}/`);
+};
+---
+
+<header class="site-header" data-header>
+  <div class="shell site-header__inner">
+    <a class="site-header__brand" href={path('/')}>
+      <Emblem size={46} loading="eager" />
+      <Wordmark size="sm" tagline />
+      <span class="visually-hidden">EncounterSmith home</span>
+    </a>
+
+    <button class="nav-toggle" type="button" data-nav-toggle aria-expanded="true" aria-controls="site-nav">
+      <span class="nav-toggle__bars" aria-hidden="true"><span></span><span></span><span></span></span>
+      <span data-nav-toggle-text>Menu</span>
+    </button>
+
+    <nav id="site-nav" class="site-nav" data-nav aria-label="Primary">
+      <ul class="site-nav__list">
+        {
+          primaryNav.map((item) => (
+            <li>
+              <a
+                class="site-nav__link"
+                href={path(item.href)}
+                aria-current={isCurrent(item.href) ? 'page' : undefined}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <a class="btn btn--sm site-nav__cta" href={path('/tools')}>Explore the tools</a>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(238, 227, 206, 0.95);
+    backdrop-filter: saturate(150%) blur(6px);
+    border-bottom: 1px solid var(--color-border);
+    box-shadow: 0 1px 0 var(--brand-bronze);
+  }
+
+  .site-header__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-sm);
+    min-height: var(--header-h);
+    padding-block: 0.6rem;
+  }
+
+  .site-header__brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    margin-right: auto;
+    text-decoration: none;
+  }
+
+  .nav-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    padding: 0.4rem 0.85rem;
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-primary);
+    background: transparent;
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius);
+    cursor: pointer;
+  }
+
+  .nav-toggle__bars {
+    display: grid;
+    gap: 3px;
+    width: 1.05rem;
+  }
+
+  .nav-toggle__bars span {
+    display: block;
+    height: 2px;
+    background: currentColor;
+  }
+
+  .site-nav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-sm);
+    width: 100%;
+  }
+
+  .site-nav__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.2rem var(--space-sm);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+  }
+
+  .site-nav__link {
+    display: block;
+    padding: 0.6rem 0.2rem;
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text);
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+  }
+
+  .site-nav__link:hover {
+    color: var(--color-primary);
+    border-bottom-color: var(--color-accent);
+  }
+
+  .site-nav__link[aria-current='page'] {
+    color: var(--color-primary);
+    border-bottom-color: var(--color-primary);
+  }
+
+  .site-nav__cta {
+    width: 100%;
+  }
+
+  /* Collapsed only on narrow screens, and only once the script has taken
+     over: without JavaScript every link stays on the page. */
+  .site-nav[data-state='closed'] {
+    display: none;
+  }
+
+  @media (min-width: 64rem) {
+    .site-header__inner {
+      flex-wrap: nowrap;
+    }
+
+    .nav-toggle {
+      display: none;
+    }
+
+    .site-nav,
+    .site-nav[data-state='closed'] {
+      display: flex;
+      width: auto;
+      justify-content: flex-end;
+    }
+
+    .site-nav__list {
+      width: auto;
+      gap: var(--space-md);
+    }
+
+    .site-nav__cta {
+      width: auto;
+    }
+  }
+</style>
+
+<script>
+  const header = document.querySelector<HTMLElement>('[data-header]');
+  const toggle = header?.querySelector<HTMLButtonElement>('[data-nav-toggle]');
+  const nav = header?.querySelector<HTMLElement>('[data-nav]');
+  const toggleText = toggle?.querySelector<HTMLElement>('[data-nav-toggle-text]');
+  const wide = window.matchMedia('(min-width: 64rem)');
+
+  if (toggle && nav) {
+    const setOpen = (open: boolean): void => {
+      nav.dataset['state'] = open ? 'open' : 'closed';
+      toggle.setAttribute('aria-expanded', String(open));
+      if (toggleText) toggleText.textContent = open ? 'Close' : 'Menu';
+    };
+
+    // The markup ships open so a visitor without JavaScript keeps every link.
+    setOpen(wide.matches);
+
+    toggle.addEventListener('click', () => setOpen(nav.dataset['state'] !== 'open'));
+
+    nav.addEventListener('click', (event) => {
+      const target = event.target;
+      if (target instanceof Element && target.closest('a') && !wide.matches) setOpen(false);
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape' || wide.matches) return;
+      if (nav.dataset['state'] !== 'open') return;
+      setOpen(false);
+      toggle.focus();
+    });
+
+    wide.addEventListener('change', (event) => setOpen(event.matches));
+  }
+</script>

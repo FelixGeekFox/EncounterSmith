@@ -1,0 +1,85 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHeader from '@/components/PageHeader.astro';
+import { site } from '@/data/site';
+---
+
+<BaseLayout
+  title="Terms"
+  description="The terms covering use of the EncounterSmith website and its free generators, including what you may do with generated results."
+  path="/terms"
+>
+  <PageHeader
+    eyebrow="Terms"
+    title="Terms of use."
+    crumbs={[{ label: 'Home', href: '/' }, { label: 'Terms' }]}
+  >
+    <p class="note">Last updated {site.legal.updated}.</p>
+  </PageHeader>
+
+  <section class="band band--tight">
+    <div class="shell prose">
+      <h2>Using this site</h2>
+      <p>
+        The generators and free resources on {site.name} are here for you to use in your own
+        roleplaying games. No account is required and there is no charge.
+      </p>
+
+      <h2>What you may do with generated results</h2>
+      <p>
+        Anything you forge here may be used freely in your own games: home campaigns, one-shots,
+        play-by-post, streamed or recorded sessions, and convention play. No credit is required, and
+        you may change a result as much as you like.
+      </p>
+      <p>
+        Commercial reuse is a separate question, and it is <strong>not licensed yet</strong>. Until a
+        written licence is published on this site, please do not republish the tables, resell
+        generated output, or include it in a product you sell. A licence is being prepared; if you
+        have a specific project in mind, write to
+        <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a> and ask.
+      </p>
+
+      <h2>Our content</h2>
+      <p>
+        The text, tables, code, design and artwork on this site are original work and remain the
+        property of {site.legal.entity}. The {site.name} name, emblem and wordmark are ours.
+      </p>
+
+      <h2>Other people&rsquo;s content</h2>
+      <p>
+        {site.name} is independent and is not affiliated with, endorsed, sponsored or approved by
+        Wizards of the Coast or any other game publisher. Nothing here uses another publisher&rsquo;s
+        settings, characters, monsters, trade dress or text. If you believe something on this site
+        infringes your rights, write to us and it will be looked at promptly.
+      </p>
+
+      <h2>Products</h2>
+      <p>
+        Nothing is on sale through this site at present. When it is, the terms covering purchase,
+        delivery, refunds and licensing will be published here before anything can be bought.
+      </p>
+
+      <h2>Availability</h2>
+      <p>
+        The site is provided as it is. It may change, move or be unavailable from time to time, and no
+        guarantee of uninterrupted availability is offered.
+      </p>
+
+      <h2>Liability</h2>
+      <p>
+        To the extent permitted by law, {site.legal.entity} is not liable for loss arising from use of
+        this site or the material forged on it. Nothing in these terms limits any right you have under
+        the Australian Consumer Law or other law that cannot be excluded.
+      </p>
+
+      <h2>Governing law</h2>
+      <p>These terms are governed by the law of {site.legal.jurisdiction}.</p>
+
+      <h2>Contact</h2>
+      <p>
+        {site.legal.entity}<br />
+        <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>
+      </p>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,130 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHeader from '@/components/PageHeader.astro';
+import SectionHeading from '@/components/SectionHeading.astro';
+import ProductCard from '@/components/ProductCard.astro';
+import NewsletterForm from '@/components/NewsletterForm.astro';
+import { ctaFor, products } from '@/data/products';
+import { site } from '@/data/site';
+import { absolute, path } from '@/lib/url';
+
+/*
+ * Product structured data is emitted only behind a feature flag and only for a
+ * pack with a real checkout URL. An incomplete offer is worse than none.
+ */
+const jsonLd = site.features.productSchema
+  ? products
+      .filter((product) => ctaFor(product).kind === 'buy')
+      .map((product) => ({
+        '@context': 'https://schema.org',
+        '@type': 'Product',
+        name: product.name,
+        description: product.description,
+        url: `${absolute(site.url, '/products')}#${product.slug}`,
+        offers: {
+          '@type': 'Offer',
+          price: product.price.toFixed(2),
+          priceCurrency: product.currency,
+          availability: 'https://schema.org/InStock',
+          url: product.purchaseUrl,
+        },
+      }))
+  : [];
+---
+
+<BaseLayout
+  title="Adventure packs and Game Master toolkits"
+  description="Original adventure packs, NPC toolkits and printable session material from EncounterSmith, written and laid out by hand for Game Masters running fantasy games."
+  path="/products"
+  jsonLd={jsonLd}
+>
+  <PageHeader
+    eyebrow="Adventure packs"
+    title="Made slowly, for the nights that matter."
+    lede="Deeper material than a generator can give you: full kits, adventures and reference packs, each one written, edited and laid out by hand."
+    crumbs={[{ label: 'Home', href: '/' }, { label: 'Products' }]}
+  >
+    <p class="note packs__honesty">
+      None of these are finished yet. Each card says exactly where it has got to, and there is no
+      checkout on this site until there is genuinely something to send you.
+    </p>
+  </PageHeader>
+
+  <section class="band band--tight">
+    <div class="shell packs-grid">
+      {
+        products.map((product) => (
+          <div id={product.slug} class="packs-grid__cell">
+            <ProductCard product={product} detailed level={2} />
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="band band--dark" id="launch">
+    <div class="shell packs-list">
+      <SectionHeading eyebrow="Launch list" title="Hear when the first pack is ready.">
+        <p>
+          One email when a pack goes on sale, and one when a new free tool lands. Nothing else, and
+          nothing passed to anybody.
+        </p>
+      </SectionHeading>
+      <div class="plate plate--dark on-dark">
+        <NewsletterForm id="packs-launch" source="products-page" submitLabel="Join the launch list" inverse />
+      </div>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="shell prose">
+      <SectionHeading eyebrow="What to expect" title="How these packs are put together." />
+      <p>
+        Everything is original. No pack draws on another publisher&rsquo;s setting, characters,
+        monsters or text, and nothing is generated and shipped unread. The material is
+        system-friendly fantasy: people, places, problems and consequences, with the numbers left to
+        whichever game is on your table.
+      </p>
+      <p>
+        Every pack will be a plain PDF you download and keep, with a print-friendly version in the
+        same file. No reader app, no account, and no requirement to stay subscribed to keep what you
+        bought.
+      </p>
+      <p class="note">
+        Prices shown are the planned prices and may change before release. Commercial reuse of pack
+        contents is not licensed yet; the <a href={path('/faq')}>FAQ</a> says where that has got to.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .packs__honesty {
+    margin-top: var(--space-sm);
+    max-width: 56ch;
+  }
+
+  .packs-grid {
+    display: grid;
+    gap: var(--space-md);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+  }
+
+  .packs-grid__cell {
+    display: grid;
+    scroll-margin-top: calc(var(--header-h) + 1.5rem);
+  }
+
+  .packs-list {
+    display: grid;
+    gap: var(--space-lg);
+    align-items: center;
+  }
+
+  @media (min-width: 58rem) {
+    .packs-list {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: var(--space-xl);
+    }
+  }
+</style>

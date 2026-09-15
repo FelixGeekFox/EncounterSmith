@@ -1,0 +1,133 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Button from '@/components/Button.astro';
+import Emblem from '@/components/Emblem.astro';
+import { hooks } from '@/data/generators/hooks';
+import { tools } from '@/data/tools';
+import { site } from '@/data/site';
+import { path } from '@/lib/url';
+
+// A fixed pick, so the page stays static and still pays the visitor back for
+// the detour.
+const consolation = hooks[9] as string;
+---
+
+<BaseLayout
+  title="Page not found"
+  description="That page is not on the map. Here is the way back to the free EncounterSmith generators."
+  path="/404"
+  noindex
+>
+  <section class="band lost">
+    <div class="shell lost__inner">
+      <div>
+        <p class="eyebrow">404 &middot; off the map</p>
+        <h1>You&rsquo;ve wandered off the map.</h1>
+        <p class="lede lost__lede">
+          The page you were looking for has moved, been renamed, or never existed. None of those are
+          your fault.
+        </p>
+        <div class="btn-row lost__actions">
+          <Button href="/tools">Go to the free tools</Button>
+          {site.features.products && <Button href="/products" variant="outline">Browse the packs</Button>}
+          <Button href="/" variant="outline">Back to the home page</Button>
+        </div>
+        <p class="note lost__help">
+          If a link on this site sent you here, tell us at
+          <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a> and it will be fixed.
+        </p>
+      </div>
+
+      <div class="plate lost__spark">
+        <Emblem size={56} />
+        <p class="eyebrow">Since you came all this way</p>
+        <p class="lost__hook">{consolation}</p>
+        <p class="note">
+          A free spark for the detour. There are twenty-four more on the
+          <a href={path('/free-resources')}>free resources page</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="band band--quiet">
+    <div class="shell">
+      <h2 class="lost__heading">Places that do exist</h2>
+      <ul class="lost__links">
+        {tools.map((tool) => <li><a href={path(tool.href)}>{tool.name}</a></li>)}
+        <li><a href={path('/free-resources')}>Free resources</a></li>
+        <li><a href={path('/smith-plus')}>Smith+</a></li>
+        <li><a href={path('/faq')}>FAQ</a></li>
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .lost {
+    padding-top: var(--space-lg);
+  }
+
+  .lost__inner {
+    display: grid;
+    gap: var(--space-lg);
+    align-items: start;
+  }
+
+  @media (min-width: 58rem) {
+    .lost__inner {
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      gap: var(--space-xl);
+    }
+  }
+
+  .lost__lede {
+    margin-top: var(--space-sm);
+  }
+
+  .lost__actions {
+    margin-block: var(--space-md);
+  }
+
+  .lost__spark {
+    display: grid;
+    gap: var(--space-2xs);
+  }
+
+  .lost__hook {
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    line-height: 1.35;
+    color: var(--color-heading);
+  }
+
+  .lost__heading {
+    font-size: var(--text-xl);
+  }
+
+  .lost__links {
+    list-style: none;
+    margin: var(--space-sm) 0 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-2xs);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+  }
+
+  .lost__links a {
+    display: flex;
+    align-items: center;
+    min-height: 3rem;
+    padding: 0.5rem 0.9rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-left: 3px solid var(--color-accent);
+    border-radius: var(--radius);
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .lost__links a:hover {
+    border-left-color: var(--color-primary);
+  }
+</style>

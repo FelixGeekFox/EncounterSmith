@@ -1,0 +1,40 @@
+---
+import { icons, type IconName } from './icons';
+
+interface Props {
+  name: IconName;
+  /** Accessible label. Omit it and the icon is hidden from assistive tech. */
+  title?: string | undefined;
+  size?: number;
+  strokeWidth?: number;
+  class?: string | undefined;
+}
+
+const { name, title, size = 24, strokeWidth = 1.4, class: className } = Astro.props;
+const shapes = icons[name];
+const decorative = title === undefined;
+---
+
+<svg
+  class={className}
+  width={size}
+  height={size}
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width={strokeWidth}
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  role={decorative ? undefined : 'img'}
+  aria-hidden={decorative ? 'true' : undefined}
+  focusable="false"
+>
+  {title !== undefined && <title>{title}</title>}
+  {
+    shapes.map((shape) => {
+      if (shape.type === 'path') return <path d={shape.d} />;
+      if (shape.type === 'circle') return <circle cx={shape.cx} cy={shape.cy} r={shape.r} />;
+      return <line x1={shape.x1} y1={shape.y1} x2={shape.x2} y2={shape.y2} />;
+    })
+  }
+</svg>

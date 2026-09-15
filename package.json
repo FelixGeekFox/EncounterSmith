@@ -1,0 +1,30 @@
+{
+  "name": "encountersmith",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "EncounterSmith - original, system-friendly tabletop RPG tools for busy Game Masters.",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro check && astro build",
+    "build:fast": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "assets": "python3 tools/build-assets.py",
+    "verify": "npm run check && npm run test && npm run build:fast"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.6.0",
+    "@fontsource/cinzel": "^5.2.6",
+    "@fontsource/lato": "^5.2.6",
+    "astro": "^5.14.1"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  }
+}

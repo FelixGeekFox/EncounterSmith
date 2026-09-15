@@ -1,0 +1,47 @@
+---
+import { path } from '@/lib/url';
+
+interface Props {
+  href?: string | undefined;
+  type?: 'button' | 'submit';
+  variant?: 'solid' | 'outline' | 'brass' | 'quiet';
+  size?: 'md' | 'sm';
+  disabled?: boolean;
+  class?: string | undefined;
+  /** Anything else (data-*, aria-*) is forwarded to the rendered element. */
+  [key: string]: unknown;
+}
+
+const {
+  href,
+  type = 'button',
+  variant = 'solid',
+  size = 'md',
+  disabled = false,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const classes = ['btn', variant !== 'solid' && `btn--${variant}`, size === 'sm' && 'btn--sm', className];
+const external = href !== undefined && /^https?:\/\//.test(href);
+const target = href === undefined ? undefined : path(href);
+---
+
+{
+  href ? (
+    <a
+      class:list={classes}
+      href={target}
+      rel={external ? 'noopener noreferrer' : undefined}
+      target={external ? '_blank' : undefined}
+      {...rest}
+    >
+      <slot />
+      {external && <span class="visually-hidden"> (opens in a new tab)</span>}
+    </a>
+  ) : (
+    <button class:list={classes} type={type} disabled={disabled} {...rest}>
+      <slot />
+    </button>
+  )
+}

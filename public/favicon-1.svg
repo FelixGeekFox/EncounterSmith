@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="EncounterSmith">
+  <rect width="64" height="64" rx="10" fill="#22381f"/>
+  <path d="M32 9 51 20v22L32 53 13 42V20Z" fill="none" stroke="#b08d57" stroke-width="2.4" stroke-linejoin="round"/>
+  <path d="M32 9 45 36H19Z" fill="none" stroke="#b08d57" stroke-width="1.6" stroke-linejoin="round" opacity=".8"/>
+  <path d="M19 36 32 53 45 36" fill="none" stroke="#b08d57" stroke-width="1.6" stroke-linejoin="round" opacity=".6"/>
+  <text x="32" y="32" text-anchor="middle" font-family="Georgia, serif" font-size="15" font-weight="700" fill="#f5d78e">20</text>
+</svg>

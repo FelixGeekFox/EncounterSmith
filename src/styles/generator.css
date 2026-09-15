@@ -1,0 +1,295 @@
+/* ===========================================================================
+   The forge: the generator panel.
+   Loaded only on pages that actually contain one.
+   =========================================================================== */
+
+.forge {
+  display: grid;
+  gap: var(--space-sm);
+}
+
+/* --- Toolbar ------------------------------------------------------------- */
+
+.forge__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2xs);
+  padding: var(--space-xs);
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset;
+}
+
+.forge__bar-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2xs);
+}
+
+.forge__bar-group--end {
+  margin-left: auto;
+}
+
+@media (max-width: 45rem) {
+  .forge__bar-group--end {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .forge__bar-group--end .btn {
+    flex: 1 1 7rem;
+  }
+}
+
+.forge__live {
+  min-height: 1.6rem;
+  margin: 0;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--clay-ink);
+}
+
+/* --- Empty state --------------------------------------------------------- */
+
+.forge__empty {
+  display: grid;
+  gap: var(--space-2xs);
+  padding: var(--space-lg) var(--space-md);
+  border: 1px dashed var(--color-border-strong);
+  border-radius: var(--radius);
+  background: rgba(250, 244, 231, 0.55);
+}
+
+.forge__empty h3 {
+  margin: 0;
+}
+
+.forge__empty p {
+  max-width: 52ch;
+  color: var(--color-text-muted);
+}
+
+/* --- Result ledger ------------------------------------------------------- */
+
+.forge__result {
+  scroll-margin-top: calc(var(--header-h) + 1.5rem);
+}
+
+.forge__result:focus {
+  outline: none;
+}
+
+.forge__result:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 6px;
+}
+
+.forge__slots {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+}
+
+/* A ruled ledger rather than a grid of identical cards: one hairline between
+   rows, a bronze spine down the left, and the headline slot given the display
+   face so the result reads like an entry in a field guide. */
+.slot {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-3xs) var(--space-sm);
+  align-items: start;
+  padding: var(--space-sm) var(--space-sm) var(--space-sm) calc(var(--space-sm) + 4px);
+  border-bottom: 1px solid var(--color-border);
+  border-left: 4px solid transparent;
+  background: linear-gradient(90deg, rgba(176, 141, 87, 0.09), transparent 42%);
+}
+
+.slot:first-child {
+  border-top: 1px solid var(--color-border);
+}
+
+.slot[data-locked='true'] {
+  border-left-color: var(--brand-bronze);
+  background: linear-gradient(90deg, rgba(245, 215, 142, 0.4), rgba(245, 215, 142, 0.05) 60%);
+}
+
+.slot__head {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-3xs) var(--space-2xs);
+  grid-column: 1;
+}
+
+.slot__label {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--clay-ink);
+}
+
+/* Lock state is never colour alone: this chip and the button's own text label
+   and aria-pressed all say the same thing. */
+.slot__flag {
+  display: none;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #453309;
+  background: var(--brand-candlelight);
+  border: 1px solid #9b7a2e;
+  border-radius: 999px;
+  padding: 0.05rem 0.5rem;
+}
+
+.slot[data-locked='true'] .slot__flag {
+  display: inline-block;
+}
+
+.slot__help {
+  grid-column: 1;
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.slot__value {
+  grid-column: 1;
+  margin: 0;
+  font-size: var(--text-base);
+  line-height: 1.5;
+}
+
+.slot[data-filled='false'] .slot__value {
+  color: #8a8270;
+  font-style: italic;
+}
+
+.slot:first-child .slot__value {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  line-height: 1.2;
+  color: var(--color-heading);
+}
+
+.slot__actions {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  display: flex;
+  gap: var(--space-3xs);
+}
+
+.slot__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  min-height: 2.25rem;
+  padding: 0.2rem 0.6rem;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  background: transparent;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+.slot__btn:hover {
+  background: rgba(47, 74, 50, 0.09);
+}
+
+.slot__btn[aria-pressed='true'] {
+  background: var(--brand-candlelight);
+  border-color: #9b7a2e;
+  color: #3c2c09;
+}
+
+@media (max-width: 34rem) {
+  .slot {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .slot__actions {
+    grid-column: 1;
+    grid-row: auto;
+    margin-top: var(--space-3xs);
+  }
+}
+
+.forge__hint {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+kbd {
+  font-family: var(--font-body);
+  font-size: 0.85em;
+  font-weight: 700;
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border-strong);
+  border-bottom-width: 2px;
+  border-radius: 3px;
+  padding: 0.05em 0.4em;
+}
+
+/* --- Tonight's Spark ------------------------------------------------------ */
+
+.spark {
+  display: grid;
+  gap: var(--space-sm);
+}
+
+.spark__text {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  line-height: 1.35;
+  color: var(--color-heading-inverse);
+  min-height: 4.2em;
+}
+
+.spark__live {
+  margin: 0;
+  min-height: 1.4rem;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--brand-candlelight);
+}
+
+/* --- Print: the result is the page ---------------------------------------- */
+
+@media print {
+  .forge__bar,
+  .forge__empty,
+  .forge__hint,
+  .slot__actions,
+  .forge__live {
+    display: none !important;
+  }
+
+  .slot {
+    break-inside: avoid;
+    background: none;
+    border-left: 0;
+    padding-left: 0;
+  }
+
+  .slot__help {
+    display: none;
+  }
+
+  .slot:first-child .slot__value {
+    font-size: 18pt;
+  }
+}

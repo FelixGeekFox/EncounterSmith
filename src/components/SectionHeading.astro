@@ -1,0 +1,85 @@
+---
+interface Props {
+  eyebrow?: string | undefined;
+  title: string;
+  level?: 1 | 2 | 3;
+  align?: 'start' | 'center';
+  id?: string | undefined;
+  class?: string | undefined;
+}
+
+const { eyebrow, title, level = 2, align = 'start', id, class: className } = Astro.props;
+const Tag = `h${level}` as 'h1' | 'h2' | 'h3';
+const hasBody = Astro.slots.has('default');
+---
+
+<header class:list={['sh', align === 'center' && 'sh--center', className]}>
+  {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+  <Tag id={id} class="sh__title">{title}</Tag>
+  <span class="sh__rule" aria-hidden="true">
+    <span class="sh__line"></span><span class="sh__diamond"></span><span class="sh__line"></span>
+  </span>
+  {hasBody && <div class="sh__body"><slot /></div>}
+</header>
+
+<style>
+  .sh {
+    max-width: 44rem;
+    margin-bottom: var(--space-md);
+  }
+
+  .sh--center {
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .sh__title {
+    margin-top: var(--space-3xs);
+  }
+
+  /* The diamond separator from the supplied brand artwork, reused as the
+     standing rule under every section heading. */
+  .sh__rule {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-block: var(--space-2xs) var(--space-sm);
+    color: var(--color-accent);
+  }
+
+  .sh--center .sh__rule {
+    justify-content: center;
+  }
+
+  .sh__line {
+    height: 1px;
+    width: 2.75rem;
+    background: currentColor;
+  }
+
+  .sh--center .sh__line {
+    width: 4rem;
+  }
+
+  .sh__diamond {
+    width: 0.45rem;
+    height: 0.45rem;
+    rotate: 45deg;
+    background: currentColor;
+  }
+
+  .sh__body :global(p) {
+    font-size: var(--text-lg);
+    line-height: 1.55;
+    color: var(--color-text-muted);
+  }
+
+  .sh__body :global(p + p) {
+    margin-top: var(--space-2xs);
+  }
+
+  :global(.band--dark) .sh__body :global(p),
+  :global(.on-dark) .sh__body :global(p) {
+    color: var(--color-text-inverse-muted);
+  }
+</style>

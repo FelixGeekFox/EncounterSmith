@@ -1,0 +1,36 @@
+---
+import { site } from '@/data/site';
+import { path } from '@/lib/url';
+
+interface Props {
+  /** Rendered size in CSS pixels. The emblem is square. */
+  size?: number;
+  /** Informative use needs a description; decorative use leaves alt empty. */
+  alt?: string;
+  loading?: 'eager' | 'lazy';
+  class?: string | undefined;
+}
+
+const { size = 48, alt = '', loading = 'lazy', class: className } = Astro.props;
+
+/*
+ * The supplied EncounterSmith emblem (anvil, d20, quill, pines, winding path)
+ * from Assests/Logo.png, resized by tools/build-assets.py. The 160px file is
+ * served below 120 CSS px so a header mark is not a 640px download.
+ */
+const stem = size > 120 ? site.brand.emblem : site.brand.emblemSmall;
+const intrinsic = size > 120 ? 640 : 160;
+---
+
+<picture class={className}>
+  <source srcset={path(`${stem}.webp`)} type="image/webp" />
+  <img
+    src={path(`${stem}.png`)}
+    alt={alt}
+    width={intrinsic}
+    height={intrinsic}
+    loading={loading}
+    decoding="async"
+    style={`width:${size}px;height:${size}px`}
+  />
+</picture>

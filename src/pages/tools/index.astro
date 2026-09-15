@@ -1,0 +1,112 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHeader from '@/components/PageHeader.astro';
+import SectionHeading from '@/components/SectionHeading.astro';
+import ToolCard from '@/components/ToolCard.astro';
+import SparkBox from '@/components/SparkBox.astro';
+import { tools } from '@/data/tools';
+import { site } from '@/data/site';
+import { absolute } from '@/lib/url';
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'Free tabletop RPG generators',
+    url: absolute(site.url, '/tools'),
+    description:
+      'Three free, original generators for Game Masters: NPCs, encounters and taverns. No account, no limits, system-friendly.',
+  },
+];
+---
+
+<BaseLayout
+  title="Free RPG generators — NPCs, encounters and taverns"
+  description="Three free tabletop RPG generators built for busy Game Masters. Forge original NPCs, encounters and taverns, lock what you like, reroll the rest, and copy the result into your notes."
+  path="/tools"
+  jsonLd={jsonLd}
+>
+  <PageHeader
+    eyebrow="Free tools"
+    title="Small tools. Epic stories."
+    lede="Three generators, each answering one question fast. Everything runs in your browser, nothing needs an account, and every table was written from scratch for this site."
+    crumbs={[{ label: 'Home', href: '/' }, { label: 'Tools' }]}
+  />
+
+  <section class="band band--tight">
+    <div class="shell tools-index">
+      {tools.map((tool) => <ToolCard tool={tool} detailed level={2} />)}
+    </div>
+  </section>
+
+  <section class="band band--dark">
+    <div class="shell tools-spark">
+      <SectionHeading eyebrow="Or start smaller" title="One spark, no tool required.">
+        <p>
+          If you do not need a whole person or a whole scene, take one strange thing and see where it
+          leads.
+        </p>
+      </SectionHeading>
+      <SparkBox />
+    </div>
+  </section>
+
+  <section class="band band--quiet">
+    <div class="shell prose">
+      <SectionHeading eyebrow="Shared features" title="What every generator does." />
+      <ul>
+        <li><strong>Lock and reroll.</strong> Pin the fields you like and redraw only the rest.</li>
+        <li><strong>Copy cleanly.</strong> Plain text for notes, Markdown for a wiki or a virtual tabletop journal.</li>
+        <li><strong>Print.</strong> The print layout drops the interface and keeps the result.</li>
+        <li><strong>Keyboard first.</strong> Every control is a real button, reachable by tab, and the panel announces changes to screen readers.</li>
+        <li><strong>Coherent results.</strong> Entries carry quiet tags, so an underground scene is not handed open-water terrain and a hushed NPC is not given a parade-ground voice.</li>
+        <li><strong>No repeats.</strong> Recently used entries are held back, so the same line does not arrive twice running.</li>
+        <li><strong>Private.</strong> Results never leave your device. No account, no analytics.</li>
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .tools-index {
+    display: grid;
+    gap: 0;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .tools-index > :global(.tool) {
+    border-bottom: 1px solid var(--color-border);
+    padding-block: var(--space-md);
+  }
+
+  @media (min-width: 56rem) {
+    .tools-index {
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-md);
+    }
+
+    .tools-index > :global(.tool) {
+      border-bottom: 0;
+      border-left: 1px solid var(--color-border);
+      padding-inline: var(--space-sm) var(--space-md);
+    }
+
+    .tools-index > :global(.tool:first-child) {
+      border-left: 0;
+      padding-left: 0;
+    }
+  }
+
+  .tools-spark {
+    display: grid;
+    gap: var(--space-lg);
+    align-items: start;
+  }
+
+  @media (min-width: 58rem) {
+    .tools-spark {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: var(--space-xl);
+    }
+  }
+</style>

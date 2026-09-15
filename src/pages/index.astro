@@ -1,0 +1,446 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import HeroArt from '@/components/HeroArt.astro';
+import SectionHeading from '@/components/SectionHeading.astro';
+import SparkBox from '@/components/SparkBox.astro';
+import ToolCard from '@/components/ToolCard.astro';
+import ProductCard from '@/components/ProductCard.astro';
+import NewsletterForm from '@/components/NewsletterForm.astro';
+import FaqAccordion from '@/components/FaqAccordion.astro';
+import Button from '@/components/Button.astro';
+import Emblem from '@/components/Emblem.astro';
+import { site } from '@/data/site';
+import { tools } from '@/data/tools';
+import { products } from '@/data/products';
+import { featuredFaqs } from '@/data/faq';
+import { LEAD_MAGNET_COUNT } from '@/data/generators/hooks';
+import { absolute } from '@/lib/url';
+import { path } from '@/lib/url';
+
+const steps = [
+  {
+    title: 'Choose a tool',
+    body: 'NPCs, encounters or taverns. No account, no setup, no waiting for a page to think about it.',
+  },
+  {
+    title: 'Shape the result',
+    body: 'Lock what you like and reroll the rest. Keep the name, change the secret, try three taverns in twenty seconds.',
+  },
+  {
+    title: 'Bring it to the table',
+    body: 'Copy it as plain text or Markdown into your notes, or print the page and put paper in front of you.',
+  },
+];
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: site.name,
+    url: absolute(site.url, '/'),
+    description: site.blurb,
+    inLanguage: 'en-AU',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: site.name,
+    url: absolute(site.url, '/'),
+    slogan: site.tagline,
+    description: site.blurb,
+    email: site.contactEmail,
+    logo: absolute(site.url, `${site.brand.emblem}.png`),
+  },
+];
+---
+
+<BaseLayout
+  title="EncounterSmith — Turn ideas into encounters"
+  description="Free, original tabletop RPG generators for busy Game Masters. Build tonight's session in minutes with NPCs, encounters, taverns and story sparks that work in any fantasy system."
+  path="/"
+  jsonLd={jsonLd}
+>
+  <section class="hero">
+    <div class="shell hero__inner">
+      <div class="hero__copy">
+        <p class="eyebrow">RPG tools for bolder games</p>
+        <h1>Turn ideas into encounters.</h1>
+        <p class="lede hero__lede">
+          Build tonight&rsquo;s session in minutes with original NPCs, encounters, taverns and story
+          sparks made for busy Game Masters.
+        </p>
+        <div class="btn-row hero__actions">
+          <Button href="/tools">Explore the free tools</Button>
+          {site.features.products && <Button href="/products" variant="outline">Browse adventure packs</Button>}
+        </div>
+        <ul class="hero__marks">
+          <li>Free, and no account</li>
+          <li>Fits any fantasy system</li>
+          <li>Every table written from scratch</li>
+        </ul>
+      </div>
+      <HeroArt class="hero__art" />
+    </div>
+  </section>
+
+  <section class="band band--dark" id="spark">
+    <div class="shell spark-band">
+      <div>
+        <SectionHeading eyebrow="Stuck for an opening?" title="One spark is usually enough.">
+          <p>
+            A single strange, specific thing happening somewhere your players already care about.
+            Pull a few until one of them makes you want to know what happens next.
+          </p>
+        </SectionHeading>
+        <p class="note spark-band__note">
+          Every spark is original and belongs to no particular setting, so it will fit whatever world
+          is already on your table.
+        </p>
+      </div>
+      <SparkBox />
+    </div>
+  </section>
+
+  <section class="band" id="tools">
+    <div class="shell">
+      <SectionHeading eyebrow="Free tools" title="Small tools. Epic stories.">
+        <p>
+          Three generators, each built to answer one question fast. Every result is yours to keep,
+          change and use at your table.
+        </p>
+      </SectionHeading>
+      <div class="bench">
+        {tools.map((tool) => <ToolCard tool={tool} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="band band--quiet" id="how-it-works">
+    <div class="shell">
+      <SectionHeading eyebrow="How it works" title="Three steps, about a minute." />
+      <ol class="steps">
+        {
+          steps.map((step, index) => (
+            <li class="step">
+              <span class="step__no" aria-hidden="true">{index + 1}</span>
+              <div>
+                <h3>{step.title}</h3>
+                <p>{step.body}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  {
+    site.features.products && (
+      <section class="band" id="packs">
+        <div class="shell">
+          <SectionHeading eyebrow="Adventure packs" title="Made slowly, for the nights that matter.">
+            <p>
+              Deeper material than a generator can give you: full kits, adventures and reference
+              packs, each written, edited and laid out by hand.
+            </p>
+          </SectionHeading>
+          <div class="packs">
+            {products.map((product) => (
+              <ProductCard product={product} />
+            ))}
+          </div>
+          <p class="more"><a href={path('/products')}>See what is in each pack</a></p>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    site.features.smithPlus && (
+      <section class="band band--dark" id="smith-plus">
+        <div class="shell plus">
+          <div>
+            <SectionHeading eyebrow="Smith+ · coming later" title="A deeper workshop, when it is ready.">
+              <p>
+                Smith+ is the planned subscription tier. It does not exist yet, nothing below is built,
+                and there is nothing on this page to buy.
+              </p>
+            </SectionHeading>
+            <ul class="plus__list">
+              <li>Deeper generator tables, with regional and tonal variants</li>
+              <li>Saved ideas, organised by campaign</li>
+              <li>Printable exports built for a screen you can stand up</li>
+              <li>Monthly content drops</li>
+              <li>Campaign organisation that survives a six-month gap</li>
+            </ul>
+            <p class="note plus__honest">
+              Every line above is planned, not built.
+              {site.features.smithPlusPrice && site.smithPlus.price
+                ? ` Intended price: ${site.smithPlus.price} per ${site.smithPlus.interval}.`
+                : ' No price has been set, and nothing here can be purchased.'}
+            </p>
+            <p><a href={path('/smith-plus')}>What Smith+ is meant to be &rarr;</a></p>
+          </div>
+          <div class="plate plate--dark plus__form on-dark">
+            <Emblem size={64} class="plus__mark" />
+            <h3>Join the founding list</h3>
+            <p class="note">One email when there is something real to look at. Nothing else.</p>
+            <NewsletterForm id="home-founding" source="home-smith-plus" submitLabel="Join the founding list" inverse />
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <section class="band" id="free">
+    <div class="shell lead">
+      <div>
+        <SectionHeading eyebrow="Free resource" title={`${LEAD_MAGNET_COUNT} session-saving plot hooks.`}>
+          <p>
+            A hand-picked set of story hooks, free to read and copy right now. No email required, no
+            download gate, no form standing between you and the list.
+          </p>
+        </SectionHeading>
+        <div class="btn-row">
+          <Button href="/free-resources">Read the {LEAD_MAGNET_COUNT} hooks</Button>
+        </div>
+      </div>
+      <div class="plate lead__aside">
+        <h3>Hear when the next thing lands</h3>
+        <p class="note">New free tools, new resources, and the first adventure packs.</p>
+        <NewsletterForm id="home-launch" source="home-lead-magnet" submitLabel="Join the launch list" />
+      </div>
+    </div>
+  </section>
+
+  <section class="band band--quiet" id="faq">
+    <div class="shell">
+      <SectionHeading eyebrow="Questions" title="The things Game Masters ask first." />
+      <FaqAccordion items={featuredFaqs} openFirst />
+      <p class="more"><a href={path('/faq')}>Read the full FAQ</a></p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    padding-block: var(--space-lg) var(--space-xl);
+  }
+
+  .hero__inner {
+    display: grid;
+    gap: var(--space-lg);
+    align-items: center;
+  }
+
+  @media (min-width: 62rem) {
+    .hero__inner {
+      grid-template-columns: minmax(0, 0.84fr) minmax(0, 1.3fr);
+      gap: var(--space-xl);
+    }
+
+  }
+
+  /* Above the container width there is real gutter to spend, so the artwork
+     steps out into it. The offset stays well inside the gutter, so nothing can
+     push the page sideways. */
+  @media (min-width: 80rem) {
+    .hero__art {
+      margin-right: -3.5rem;
+    }
+  }
+
+  .hero h1 {
+    margin-top: var(--space-2xs);
+  }
+
+  .hero__lede {
+    margin-top: var(--space-sm);
+    max-width: 36ch;
+  }
+
+  .hero__actions {
+    margin-block: var(--space-md);
+  }
+
+  .hero__marks {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem var(--space-sm);
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+
+  .hero__marks li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+
+  .hero__marks li::before {
+    content: '';
+    width: 0.35rem;
+    height: 0.35rem;
+    rotate: 45deg;
+    background: var(--color-accent);
+    flex: none;
+  }
+
+  .spark-band {
+    display: grid;
+    gap: var(--space-lg);
+    align-items: start;
+  }
+
+  @media (min-width: 58rem) {
+    .spark-band {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: var(--space-xl);
+    }
+  }
+
+  .spark-band__note {
+    max-width: 44ch;
+  }
+
+  /* Three columns on a bench, divided by hairlines rather than boxed up. */
+  .bench {
+    display: grid;
+    gap: 0;
+  }
+
+  .bench > :global(.tool) {
+    border-top: 1px solid var(--color-border);
+    padding-inline: 0;
+  }
+
+  @media (min-width: 56rem) {
+    .bench {
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-md);
+      border-top: 1px solid var(--color-border);
+    }
+
+    .bench > :global(.tool) {
+      border-top: 0;
+      border-left: 1px solid var(--color-border);
+      padding-inline: var(--space-sm) var(--space-md);
+    }
+
+    .bench > :global(.tool:first-child) {
+      border-left: 0;
+      padding-left: 0;
+    }
+  }
+
+  .steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-md);
+  }
+
+  @media (min-width: 52rem) {
+    .steps {
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-lg);
+    }
+  }
+
+  .step {
+    display: flex;
+    gap: var(--space-sm);
+    align-items: flex-start;
+  }
+
+  .step__no {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 2.6rem;
+    height: 2.6rem;
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-on-primary);
+    background: var(--color-primary);
+    border: 1px solid var(--forest-black);
+    border-radius: 50%;
+  }
+
+  .step h3 {
+    margin-bottom: var(--space-3xs);
+  }
+
+  .step p {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+
+  .packs {
+    display: grid;
+    gap: var(--space-md);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  }
+
+  .more {
+    margin-top: var(--space-md);
+    font-weight: 700;
+  }
+
+  .plus {
+    display: grid;
+    gap: var(--space-lg);
+    align-items: start;
+  }
+
+  @media (min-width: 64rem) {
+    .plus {
+      grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+      gap: var(--space-xl);
+    }
+  }
+
+  .plus__list {
+    display: grid;
+    gap: 0.4rem;
+    margin-bottom: var(--space-sm);
+    padding-inline-start: 1.1rem;
+  }
+
+  .plus__honest {
+    max-width: 48ch;
+    margin-bottom: var(--space-sm);
+  }
+
+  .plus__form {
+    display: grid;
+    gap: var(--space-2xs);
+  }
+
+  .plus__mark {
+    opacity: 0.85;
+  }
+
+  .lead {
+    display: grid;
+    gap: var(--space-lg);
+    align-items: start;
+  }
+
+  @media (min-width: 64rem) {
+    .lead {
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+      gap: var(--space-xl);
+    }
+  }
+
+  .lead__aside {
+    display: grid;
+    gap: var(--space-2xs);
+  }
+</style>

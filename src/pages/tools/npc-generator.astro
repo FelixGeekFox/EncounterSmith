@@ -1,0 +1,39 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro';
+import { npcGenerator } from '@/data/generators/npc';
+import { toolBySlug } from '@/data/tools';
+
+const tool = toolBySlug('npc-generator');
+---
+
+<ToolLayout tool={tool} def={npcGenerator} guidance="Three minutes of prep, one memorable person.">
+  <p>
+    Forge once, read it aloud to yourself, and keep only the parts that made you sit up. Lock those
+    and press again. Two or three passes and you have somebody specific enough to improvise with for
+    a whole evening.
+  </p>
+  <h3>Start with the want</h3>
+  <p>
+    Everything else is decoration. If you know what an NPC is trying to get out of this conversation
+    you can play them without notes, and the pressure then tells you exactly what they do when the
+    party gets in the way of it.
+  </p>
+  <h3>Hold the secret back</h3>
+  <p>
+    A secret revealed at the first meeting is only a fact. Let it surface when a player has earned
+    it, or when the NPC is frightened enough to spend it as currency.
+  </p>
+  <h3>One voice cue is enough</h3>
+  <p>
+    You do not need an accent. Take the single cue the generator hands you, use it for the first two
+    lines of dialogue, and your players will fill in the rest themselves.
+  </p>
+</ToolLayout>
+
+<script>
+  import { mountForge } from '@/scripts/generator-ui';
+  import { npcGenerator } from '@/data/generators/npc';
+
+  const root = document.querySelector<HTMLElement>('[data-forge]');
+  if (root) mountForge(root, npcGenerator);
+</script>

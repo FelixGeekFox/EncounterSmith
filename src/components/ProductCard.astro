@@ -1,0 +1,230 @@
+---
+import Emblem from './Emblem.astro';
+import { path } from '@/lib/url';
+import { ctaFor, priceLabel, statusLabel, type Product } from '@/data/products';
+
+interface Props {
+  product: Product;
+  /** Include the contents list. Used on the products page. */
+  detailed?: boolean;
+  /** Heading level, so the card sits correctly in each page's outline. */
+  level?: 2 | 3;
+}
+
+const { product, detailed = false, level = 3 } = Astro.props;
+const Name = `h${level}` as 'h2' | 'h3';
+const Sub = `h${(level + 1) as 3 | 4}` as 'h3' | 'h4';
+const cta = ctaFor(product);
+const onSale = product.status === 'available';
+---
+
+<article class:list={['pack', product.featured && 'pack--featured']}>
+  <div class="pack__cover">
+    {
+      product.coverImage ? (
+        <img
+          src={path(product.coverImage)}
+          alt={`Cover of ${product.name}`}
+          width="720"
+          height="480"
+          loading="lazy"
+          decoding="async"
+        />
+      ) : (
+        <>
+          {/* No cover art has been supplied for this pack yet, so the slot
+              carries the house emblem rather than invented artwork. */}
+          <Emblem size={96} class="pack__mark" />
+          <span class="visually-hidden">Cover artwork for this pack is still being prepared.</span>
+        </>
+      )
+    }
+  </div>
+
+  <div class="pack__body">
+    <p class="pack__status"><span class="pack__pip" aria-hidden="true"></span>{statusLabel(product.status)}</p>
+    <Name class="pack__name">{product.name}</Name>
+    <p class="pack__subtitle">{product.subtitle}</p>
+    <p class="pack__desc">{product.description}</p>
+
+    {
+      detailed && (
+        <>
+          <Sub class="pack__heading">What is inside</Sub>
+          <ul class="pack__items">
+            {product.includedItems.map((item) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+          <p class="note">Compatibility: {product.systemCompatibility}</p>
+        </>
+      )
+    }
+
+    <div class="pack__foot">
+      <p class="pack__price">
+        {priceLabel(product)}
+        {!onSale && <span class="pack__price-note">planned price</span>}
+      </p>
+      {
+        cta.href ? (
+          <a class:list={['btn', 'btn--sm', cta.kind === 'preview' && 'btn--outline']} href={cta.href}>
+            {cta.label}
+          </a>
+        ) : (
+          <span class="pack__soon">{cta.label}</span>
+        )
+      }
+    </div>
+    {
+      cta.kind === 'soon' && (
+        <p class="note pack__honest">
+          Not on sale yet. <a href={path('/free-resources#launch-list')}>The launch list</a> is the only way to
+          be told when it is.
+        </p>
+      )
+    }
+  </div>
+</article>
+
+<style>
+  .pack {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-top: 3px solid var(--color-accent);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .pack--featured {
+    border-color: var(--brand-bronze);
+    box-shadow: 0 0 0 1px rgba(176, 141, 87, 0.4);
+  }
+
+  .pack__cover {
+    aspect-ratio: 3 / 2;
+    display: grid;
+    place-items: center;
+    border-bottom: 1px solid var(--color-border);
+    background:
+      repeating-linear-gradient(135deg, rgba(176, 141, 87, 0.13) 0 2px, transparent 2px 10px),
+      linear-gradient(155deg, var(--color-surface-dark), #35512f);
+  }
+
+  .pack__cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .pack__mark {
+    opacity: 0.86;
+    filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.35));
+  }
+
+  .pack__body {
+    display: grid;
+    align-content: start;
+    gap: var(--space-3xs);
+    padding: var(--space-sm);
+  }
+
+  .pack__status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--clay-ink);
+  }
+
+  .pack__pip {
+    width: 0.38rem;
+    height: 0.38rem;
+    rotate: 45deg;
+    background: var(--color-accent);
+  }
+
+  .pack__name {
+    margin: 0;
+    font-size: var(--text-xl);
+  }
+
+  .pack__subtitle {
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    color: var(--clay-ink);
+  }
+
+  .pack__desc {
+    margin-top: var(--space-3xs);
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+
+  .pack__heading {
+    margin-top: var(--space-2xs);
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--clay-ink);
+  }
+
+  .pack__items {
+    padding-inline-start: 1.05rem;
+    display: grid;
+    gap: 0.2rem;
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+
+  .pack__foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2xs);
+    margin-top: var(--space-2xs);
+    padding-top: var(--space-2xs);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .pack__price {
+    display: grid;
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    color: var(--color-heading);
+  }
+
+  .pack__price-note {
+    font-family: var(--font-body);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  /* No button for an unavailable pack: a label, because there is nothing to
+     press and a disabled button would only invite a click. */
+  .pack__soon {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--clay-ink);
+    border: 1px dashed var(--color-border-strong);
+    border-radius: var(--radius);
+    padding: 0.55rem 1rem;
+  }
+
+  .pack__honest {
+    margin-top: var(--space-3xs);
+  }
+</style>

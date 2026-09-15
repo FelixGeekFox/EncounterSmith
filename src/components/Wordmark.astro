@@ -1,0 +1,106 @@
+---
+import { site } from '@/data/site';
+
+interface Props {
+  /** Show the ruled "For Bolder Games" line beneath. */
+  tagline?: boolean;
+  inverse?: boolean;
+  size?: 'sm' | 'md' | 'lg';
+  class?: string | undefined;
+}
+
+const { tagline = false, inverse = false, size = 'md', class: className } = Astro.props;
+
+/*
+ * The wordmark is set in Cinzel rather than cut out of the banner artwork: the
+ * supplied files have it baked into an opaque parchment background, so lifting
+ * it would mean matting a raster and losing crispness at every size. Live type
+ * also stays selectable, searchable and sharp on any display. See the README
+ * if a standalone vector wordmark is supplied later.
+ */
+---
+
+<span class:list={['wm', `wm--${size}`, inverse && 'wm--inverse', className]}>
+  <span class="wm__name"
+    ><span class="wm__a">Encounter</span><span class="wm__b">Smith</span></span
+  >
+  {
+    tagline && (
+      <span class="wm__tag" aria-hidden="true">
+        <span class="wm__rule" />
+        {site.tagline}
+        <span class="wm__rule" />
+      </span>
+    )
+  }
+</span>
+
+<style>
+  .wm {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2em;
+    line-height: 1;
+  }
+
+  .wm__name {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: 0.005em;
+    white-space: nowrap;
+    color: var(--color-heading);
+  }
+
+  .wm__b {
+    color: var(--clay-ink);
+  }
+
+  .wm--inverse .wm__name {
+    color: var(--brand-parchment);
+  }
+
+  .wm--inverse .wm__b {
+    color: var(--brand-bronze);
+  }
+
+  .wm--sm .wm__name {
+    font-size: 1.15rem;
+  }
+  .wm--md .wm__name {
+    font-size: clamp(1.3rem, 1.1rem + 0.7vw, 1.7rem);
+  }
+  .wm--lg .wm__name {
+    font-size: clamp(1.9rem, 1.3rem + 2.6vw, 3.1rem);
+  }
+
+  .wm__tag {
+    display: flex;
+    align-items: center;
+    gap: 0.55em;
+    padding-left: 0.4em;
+    font-family: var(--font-body);
+    font-size: 0.46em;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--clay-ink);
+  }
+
+  .wm--inverse .wm__tag {
+    color: var(--brand-bronze);
+  }
+
+  .wm__rule {
+    width: 1.5em;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.75;
+  }
+
+  @media (max-width: 26rem) {
+    .wm__tag {
+      letter-spacing: 0.18em;
+    }
+  }
+</style>

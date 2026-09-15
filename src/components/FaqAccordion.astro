@@ -1,0 +1,81 @@
+---
+import type { FaqItem } from '@/data/faq';
+
+interface Props {
+  items: readonly FaqItem[];
+  /** Open the first entry so the block does not read as an empty list. */
+  openFirst?: boolean;
+}
+
+const { items, openFirst = false } = Astro.props;
+---
+
+<div class="faq">
+  {
+    items.map((item, index) => (
+      <details class="faq__item" open={openFirst && index === 0}>
+        <summary>
+          <span>{item.question}</span>
+        </summary>
+        <div class="faq__answer">
+          <p>{item.answer}</p>
+        </div>
+      </details>
+    ))
+  }
+</div>
+
+<style>
+  .faq {
+    max-width: 52rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .faq__item {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .faq__item > summary {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2xs);
+    list-style: none;
+    cursor: pointer;
+    padding: var(--space-sm) 2.5rem var(--space-sm) 0;
+    position: relative;
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    color: var(--color-heading);
+  }
+
+  .faq__item > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq__item > summary::after {
+    content: '';
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    width: 0.55rem;
+    height: 0.55rem;
+    margin-top: -0.38rem;
+    border-right: 2px solid var(--bronze-ink);
+    border-bottom: 2px solid var(--bronze-ink);
+    rotate: 45deg;
+    transition: rotate 160ms ease;
+  }
+
+  .faq__item[open] > summary::after {
+    rotate: -135deg;
+  }
+
+  .faq__answer {
+    padding-bottom: var(--space-sm);
+    max-width: var(--measure);
+  }
+
+  .faq__answer p {
+    color: var(--color-text-muted);
+  }
+</style>

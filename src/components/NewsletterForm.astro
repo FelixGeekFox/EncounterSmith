@@ -1,0 +1,149 @@
+---
+import { site } from '@/data/site';
+import { path } from '@/lib/url';
+
+interface Props {
+  /** Unique per instance: several forms appear on one page. */
+  id: string;
+  label?: string;
+  submitLabel?: string;
+  /** Hidden field so one provider list can tell sign-up sources apart. */
+  source: string;
+  inverse?: boolean;
+}
+
+const { id, label = 'Your email address', submitLabel = 'Join the list', source, inverse = false } =
+  Astro.props;
+
+const action = site.emailFormAction;
+const connected = action !== undefined;
+const isDev = import.meta.env.DEV;
+const noteId = `${id}-note`;
+---
+
+<div class:list={['news', inverse && 'on-dark']}>
+  {
+    connected ? (
+      <form class="news__form" action={action} method="post">
+        <div class="news__field">
+          <label for={`${id}-email`}>{label}</label>
+          <input
+            id={`${id}-email`}
+            name="email"
+            type="email"
+            autocomplete="email"
+            required
+            placeholder="you@example.com"
+            aria-describedby={noteId}
+          />
+        </div>
+        <input type="hidden" name="source" value={source} />
+        <button class="btn" type="submit">{submitLabel}</button>
+      </form>
+    ) : (
+      <div class="news__form">
+        <div class="news__field">
+          <label for={`${id}-email`}>{label}</label>
+          <input
+            id={`${id}-email`}
+            name="email"
+            type="email"
+            autocomplete="email"
+            placeholder="you@example.com"
+            disabled
+            aria-describedby={noteId}
+          />
+        </div>
+        <button class="btn" type="button" disabled aria-describedby={noteId}>{submitLabel}</button>
+      </div>
+    )
+  }
+
+  <p class="news__note" id={noteId}>
+    {
+      connected ? (
+        <>
+          Joining means occasional email from {site.name} about new tools and releases. No third-party
+          marketing, and one click unsubscribes you. The <a href={path('/privacy')}>privacy notice</a> says what
+          happens to your address.
+        </>
+      ) : (
+        <>
+          <strong>The list is not open yet.</strong> No email provider is connected to this site, so
+          nothing can be collected and nothing would be sent. Until it is, write to{' '}
+          <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a> and you will be added by hand.
+        </>
+      )
+    }
+  </p>
+
+  {
+    !connected && isDev && (
+      <p class="news__dev">
+        <strong>Developer note:</strong> set <code>PUBLIC_EMAIL_FORM_ACTION</code> in <code>.env</code> to
+        your provider&rsquo;s form endpoint and this form starts posting to it. See &ldquo;Connecting an
+        email provider&rdquo; in the README. This note only appears in development.
+      </p>
+    )
+  }
+</div>
+
+<style>
+  .news {
+    display: grid;
+    gap: var(--space-2xs);
+  }
+
+  .news__form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: var(--space-2xs);
+  }
+
+  .news__field {
+    flex: 1 1 15rem;
+    min-width: 0;
+  }
+
+  @media (max-width: 30rem) {
+    .news__form .btn {
+      width: 100%;
+    }
+  }
+
+  .news__note {
+    margin: 0;
+    max-width: 52ch;
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+
+  .on-dark .news__note {
+    color: var(--color-text-inverse-muted);
+  }
+
+  .on-dark .news__note :global(a) {
+    color: var(--brand-candlelight);
+  }
+
+  .news__dev {
+    margin: 0;
+    max-width: 56ch;
+    padding: var(--space-2xs) var(--space-xs);
+    font-size: var(--text-sm);
+    line-height: 1.5;
+    color: var(--color-text);
+    background: rgba(245, 215, 142, 0.35);
+    border: 1px dashed #9b7a2e;
+    border-radius: var(--radius);
+  }
+
+  code {
+    font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+    font-size: 0.9em;
+    background: rgba(46, 46, 46, 0.09);
+    border-radius: 3px;
+    padding: 0.05em 0.3em;
+  }
+</style>

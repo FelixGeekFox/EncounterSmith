@@ -1,0 +1,72 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHeader from '@/components/PageHeader.astro';
+import SectionHeading from '@/components/SectionHeading.astro';
+import FaqAccordion from '@/components/FaqAccordion.astro';
+import { faqs } from '@/data/faq';
+import { site } from '@/data/site';
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: { '@type': 'Answer', text: item.answer },
+    })),
+  },
+];
+---
+
+<BaseLayout
+  title="Frequently asked questions"
+  description="Answers about the free EncounterSmith generators: what they cost, which systems they suit, how you may reuse results, and where Smith+ has got to."
+  path="/faq"
+  jsonLd={jsonLd}
+>
+  <PageHeader
+    eyebrow="Questions"
+    title="Frequently asked questions."
+    crumbs={[{ label: 'Home', href: '/' }, { label: 'FAQ' }]}
+  >
+    <p class="lede faq__lede">
+      If something is not answered here, write to
+      <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a> and it will be.
+    </p>
+  </PageHeader>
+
+  <section class="band band--tight">
+    <div class="shell">
+      <FaqAccordion items={faqs} openFirst />
+    </div>
+  </section>
+
+  <section class="band band--quiet">
+    <div class="shell prose">
+      <SectionHeading eyebrow="Compatibility" title="What this site is, and is not." />
+      <p>
+        EncounterSmith is an independent project. It is not affiliated with, endorsed, sponsored or
+        approved by Wizards of the Coast or any other game publisher, and it does not use any
+        publisher&rsquo;s settings, characters, monsters, trade dress or text.
+      </p>
+      <p>
+        Everything generated here is written for this site and kept deliberately system-friendly, so
+        it describes people, places and situations rather than rules. That is what makes it usable in
+        any fantasy roleplaying game without conversion, and it is also what keeps it clear of
+        anybody else&rsquo;s intellectual property.
+      </p>
+      <p class="note">
+        A compatibility statement is not a licence, and nothing on this page should be read as
+        permission to use material belonging to somebody else.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .faq__lede {
+    margin-top: var(--space-sm);
+    max-width: 52ch;
+  }
+</style>

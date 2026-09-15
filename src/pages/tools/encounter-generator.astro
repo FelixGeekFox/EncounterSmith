@@ -1,0 +1,44 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro';
+import { encounterGenerator } from '@/data/generators/encounter';
+import { toolBySlug } from '@/data/tools';
+
+const tool = toolBySlug('encounter-generator');
+---
+
+<ToolLayout tool={tool} def={encounterGenerator} guidance="Every encounter needs a reason to end.">
+  <p>
+    Read the situation and the objective together before anything else. Those two lines are the
+    encounter. Everything under them is material to reach for when the scene needs another turn of
+    the screw.
+  </p>
+  <h3>Hold the complication for the second beat</h3>
+  <p>
+    Open with the situation as written and let the players commit to a plan. The complication lands
+    hardest once they have decided what they are doing, because that is the moment it costs them
+    something.
+  </p>
+  <h3>The escalation is your timer</h3>
+  <p>
+    If the table stalls, or the scene has made its point and is still going, spend the escalation. It
+    gives you somewhere to move without inventing anything on the spot.
+  </p>
+  <h3>Make the non-combat approach genuinely work</h3>
+  <p>
+    It is only a real choice if it succeeds. When a player finds that route, let it pay off on its
+    own terms rather than routing them back into the fight.
+  </p>
+  <h3>Let the consequence be true</h3>
+  <p>
+    Walking away should mean something. Note the consequence line somewhere you will see it again,
+    and let it turn up three sessions later.
+  </p>
+</ToolLayout>
+
+<script>
+  import { mountForge } from '@/scripts/generator-ui';
+  import { encounterGenerator } from '@/data/generators/encounter';
+
+  const root = document.querySelector<HTMLElement>('[data-forge]');
+  if (root) mountForge(root, encounterGenerator);
+</script>

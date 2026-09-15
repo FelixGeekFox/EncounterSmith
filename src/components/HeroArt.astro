@@ -1,0 +1,66 @@
+---
+import { site } from '@/data/site';
+import { path } from '@/lib/url';
+
+interface Props {
+  class?: string | undefined;
+  loading?: 'eager' | 'lazy';
+}
+
+const { class: className, loading = 'eager' } = Astro.props;
+
+/*
+ * The illustrated half of the supplied EncounterSmith banner, cropped by
+ * tools/build-assets.py so the painted heading and painted button on its left
+ * side are not competing with the real HTML heading and buttons beside it.
+ * Aspect ratio is preserved; nothing is stretched.
+ */
+const stem = site.brand.heroScene;
+const webp = [460, 640, 920].map((w) => `${path(`${stem}-${w}.webp`)} ${w}w`).join(', ');
+const png = [460, 640, 920].map((w) => `${path(`${stem}-${w}.png`)} ${w}w`).join(', ');
+const sizes = '(min-width: 62rem) 46vw, 100vw';
+const alt =
+  "A cartographer's desk at dusk: a map spread beneath a lit twenty-sided die, with a compass, quill and inkwell beside it, and a lone traveller on a ridge looking toward a distant castle.";
+---
+
+<figure class:list={['hero-art', className]}>
+  <picture>
+    <source type="image/webp" srcset={webp} sizes={sizes} />
+    <img
+      src={path(`${stem}-920.png`)}
+      srcset={png}
+      sizes={sizes}
+      width="920"
+      height="724"
+      alt={alt}
+      loading={loading}
+      decoding="async"
+      fetchpriority={loading === 'eager' ? 'high' : undefined}
+    />
+  </picture>
+</figure>
+
+<style>
+  .hero-art {
+    margin: 0;
+    position: relative;
+    border: 1px solid var(--color-accent);
+    background: var(--forest-black);
+    box-shadow: 0 16px 44px rgba(28, 22, 10, 0.24);
+  }
+
+  .hero-art::after {
+    content: '';
+    position: absolute;
+    inset: 5px;
+    border: 1px solid rgba(245, 215, 142, 0.3);
+    pointer-events: none;
+  }
+
+  .hero-art img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 920 / 724;
+  }
+</style>

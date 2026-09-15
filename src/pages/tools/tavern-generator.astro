@@ -1,0 +1,43 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro';
+import { tavernGenerator } from '@/data/generators/tavern';
+import { toolBySlug } from '@/data/tools';
+
+const tool = toolBySlug('tavern-generator');
+---
+
+<ToolLayout tool={tool} def={tavernGenerator} guidance="An inn is where the plot finds your players.">
+  <p>
+    Taverns are where a session slows down and the table starts talking to each other. Give the place
+    one strong smell, one strong opinion and one thing that is not right, and the players will do the
+    rest for you.
+  </p>
+  <h3>Lead with the atmosphere</h3>
+  <p>
+    Describe the room before anybody in it. The atmosphere line tells your players how loudly they
+    can speak, which is really a question about what kind of scene this is going to be.
+  </p>
+  <h3>The problem is the hook</h3>
+  <p>
+    The current problem gives the proprietor a reason to talk to strangers. You do not need a notice
+    board when the person pouring the drinks already needs something.
+  </p>
+  <h3>Spend the rumour carefully</h3>
+  <p>
+    One rumour per visit. Decide in advance whether it is true, half true or deliberately planted,
+    and write that down, because you will not remember.
+  </p>
+  <h3>Never reveal the hidden feature</h3>
+  <p>
+    Leave it alone until a player does something that would find it. It is the reward for curiosity,
+    not a detail in your description.
+  </p>
+</ToolLayout>
+
+<script>
+  import { mountForge } from '@/scripts/generator-ui';
+  import { tavernGenerator } from '@/data/generators/tavern';
+
+  const root = document.querySelector<HTMLElement>('[data-forge]');
+  if (root) mountForge(root, tavernGenerator);
+</script>
