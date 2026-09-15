@@ -1,0 +1,80 @@
+name: Build and deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check
+        run: npm run check
+
+      - name: Unit tests
+        run: npm test
+
+      - name: Build
+        run: npm run build:fast
+        env:
+          PUBLIC_SITE_URL: ${{ vars.PUBLIC_SITE_URL || format('https://{0}.github.io', github.repository_owner) }}
+          PUBLIC_BASE_PATH: ${{ vars.PUBLIC_BASE_PATH || format('/{0}', github.event.repository.name) }}
+          PUBLIC_CONTACT_EMAIL: ${{ vars.PUBLIC_CONTACT_EMAIL }}
+          PUBLIC_EMAIL_FORM_ACTION: ${{ vars.PUBLIC_EMAIL_FORM_ACTION }}
+          PUBLIC_EMAIL_PROVIDER: ${{ vars.PUBLIC_EMAIL_PROVIDER }}
+          PUBLIC_FEATURE_PRODUCTS: ${{ vars.PUBLIC_FEATURE_PRODUCTS }}
+          PUBLIC_FEATURE_SMITH_PLUS: ${{ vars.PUBLIC_FEATURE_SMITH_PLUS }}
+          PUBLIC_FEATURE_SMITH_PLUS_PRICE: ${{ vars.PUBLIC_FEATURE_SMITH_PLUS_PRICE }}
+          PUBLIC_FEATURE_PRODUCT_SCHEMA: ${{ vars.PUBLIC_FEATURE_PRODUCT_SCHEMA }}
+          PUBLIC_SMITH_PLUS_PRICE: ${{ vars.PUBLIC_SMITH_PLUS_PRICE }}
+          PUBLIC_SMITH_PLUS_INTERVAL: ${{ vars.PUBLIC_SMITH_PLUS_INTERVAL }}
+          PUBLIC_PRODUCT_EMERGENCY_KIT_URL: ${{ vars.PUBLIC_PRODUCT_EMERGENCY_KIT_URL }}
+          PUBLIC_PRODUCT_EMERGENCY_KIT_PREVIEW_URL: ${{ vars.PUBLIC_PRODUCT_EMERGENCY_KIT_PREVIEW_URL }}
+          PUBLIC_PRODUCT_NPC_SECRETS_URL: ${{ vars.PUBLIC_PRODUCT_NPC_SECRETS_URL }}
+          PUBLIC_PRODUCT_NPC_SECRETS_PREVIEW_URL: ${{ vars.PUBLIC_PRODUCT_NPC_SECRETS_PREVIEW_URL }}
+          PUBLIC_PRODUCT_WICKHOLLOW_URL: ${{ vars.PUBLIC_PRODUCT_WICKHOLLOW_URL }}
+          PUBLIC_PRODUCT_WICKHOLLOW_PREVIEW_URL: ${{ vars.PUBLIC_PRODUCT_WICKHOLLOW_PREVIEW_URL }}
+          PUBLIC_LEGAL_REVIEWED: ${{ vars.PUBLIC_LEGAL_REVIEWED }}
+          PUBLIC_LEGAL_UPDATED: ${{ vars.PUBLIC_LEGAL_UPDATED }}
+          PUBLIC_LEGAL_ENTITY: ${{ vars.PUBLIC_LEGAL_ENTITY }}
+          PUBLIC_LEGAL_JURISDICTION: ${{ vars.PUBLIC_LEGAL_JURISDICTION }}
+
+      - name: Upload the built site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publish to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
